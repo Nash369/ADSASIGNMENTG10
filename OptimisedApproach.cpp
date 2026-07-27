@@ -29,7 +29,7 @@ Node* insert(Node* root, Photo p) {
 
     if (root == nullptr)
         return new Node(p);
-    if (p.name < root->photo.name)
+    if (p.uploadDate < root->photo.uploadDate)
         root->left = insert(root->left, p);
     else
         root->right = insert(root->right, p);
@@ -42,23 +42,22 @@ void inorder(Node* root) {
     if (root == nullptr)
         return;
     inorder(root->left);
-    cout << root->photo.name
+    cout << root->photo.uploadDate
          << " - "
-         << root->photo.uploadDate
+         << root->photo.name
          << endl;
     inorder(root->right);
 }
 
 // -------------------- SEARCH BST --------------------
-Node* searchBST(Node* root, string target) {
-
+Node* searchBST(Node* root, int targetDate) {
     if (root == nullptr)
         return nullptr;
-    if (target == root->photo.name)
+    if (targetDate == root->photo.uploadDate)
         return root;
-    if (target < root->photo.name)
-        return searchBST(root->left, target);
-    return searchBST(root->right, target);
+    if (targetDate < root->photo.uploadDate)
+        return searchBST(root->left, targetDate);
+    return searchBST(root->right, targetDate);
 }
 
 // -------------------- MAIN --------------------
@@ -100,11 +99,13 @@ int main() {
     for (Photo p : gallery) {
         root = insert(root, p);
     }
-    cout << "Photos organized alphabetically:\n\n";
+    cout << "Photos organized by upload date:\n\n";
     inorder(root);
-    string target = "photo3.jpg";
-    cout << "\nSearching for " << target << "...\n\n";
-    Node* result = searchBST(root, target);
+    int targetDate = 20260719;
+    cout << "\nSearching for upload date "
+         << targetDate
+         << "...\n\n";
+    Node* result = searchBST(root, targetDate);
     if (result != nullptr) {
         cout << "Photo Found!\n\n";
         cout << "Photo Name : "
@@ -119,7 +120,7 @@ int main() {
     }
     
     // 3. QUEUE - BATCH DELETION
-    
+
     cout << "\n-----------------------------------------\n";
     cout << "3. Batch Photo Deletion (Queue)\n\n";
     queue<string> deleteQueue;
