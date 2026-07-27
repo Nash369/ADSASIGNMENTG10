@@ -12,12 +12,11 @@ struct Photo {
     int uploadDate;
 };
 
-// -------------------- BST --------------------
+// -------------------- BST NODE --------------------
 struct Node {
     Photo photo;
     Node* left;
     Node* right;
-
     Node(Photo p) {
         photo = p;
         left = nullptr;
@@ -25,29 +24,41 @@ struct Node {
     }
 };
 
+// -------------------- INSERT INTO BST --------------------
 Node* insert(Node* root, Photo p) {
 
     if (root == nullptr)
         return new Node(p);
-
-    if (p.uploadDate < root->photo.uploadDate)
+    if (p.name < root->photo.name)
         root->left = insert(root->left, p);
     else
         root->right = insert(root->right, p);
-
     return root;
 }
 
+// -------------------- DISPLAY BST --------------------
 void inorder(Node* root) {
 
     if (root == nullptr)
         return;
     inorder(root->left);
-    cout << root->photo.uploadDate
+    cout << root->photo.name
          << " - "
-         << root->photo.name
+         << root->photo.uploadDate
          << endl;
     inorder(root->right);
+}
+
+// -------------------- SEARCH BST --------------------
+Node* searchBST(Node* root, string target) {
+
+    if (root == nullptr)
+        return nullptr;
+    if (target == root->photo.name)
+        return root;
+    if (target < root->photo.name)
+        return searchBST(root->left, target);
+    return searchBST(root->right, target);
 }
 
 // -------------------- MAIN --------------------
@@ -61,68 +72,66 @@ int main() {
         {"photo5.jpg", 20260723},
         {"photo1.jpg", 20260724}
     };
-
     cout << "=========================================\n";
     cout << "SMART PHOTO STORAGE MANAGEMENT SYSTEM\n";
     cout << "Optimized using ADS Techniques\n";
     cout << "=========================================\n\n";
 
-    // =========================================
     // 1. HASH TABLE - DUPLICATE DETECTION
-    // =========================================
 
     cout << "1. Duplicate Detection (Hash Table)\n\n";
-
     unordered_set<string> hashTable;
-
     for (Photo p : gallery) {
-
         if (hashTable.find(p.name) != hashTable.end()) {
-            cout << p.name << " -> Duplicate Found" << endl;
+            cout << p.name
+                 << " -> Duplicate Found"
+                 << endl;
         }
         else {
             hashTable.insert(p.name);
         }
     }
 
-    // =========================================
-    // 2. BST - PHOTO ORGANIZATION
-    // =========================================
+    // 2. BST - PHOTO ORGANIZATION & SEARCH
 
     cout << "\n-----------------------------------------\n";
-    cout << "2. Photo Organization (Binary Search Tree)\n\n";
-
+    cout << "2. Photo Organization & Search (Binary Search Tree)\n\n";
     Node* root = nullptr;
-
     for (Photo p : gallery) {
         root = insert(root, p);
     }
-
-    cout << "Photos sorted by upload date:\n\n";
+    cout << "Photos organized alphabetically:\n\n";
     inorder(root);
-
-    // =========================================
-    // 3. QUEUE - DELETION REQUESTS
-    // =========================================
-
+    string target = "photo3.jpg";
+    cout << "\nSearching for " << target << "...\n\n";
+    Node* result = searchBST(root, target);
+    if (result != nullptr) {
+        cout << "Photo Found!\n\n";
+        cout << "Photo Name : "
+             << result->photo.name
+             << endl;
+        cout << "Upload Date: "
+             << result->photo.uploadDate
+             << endl;
+    }
+    else {
+        cout << "Photo not found.\n";
+    }
+    
+    // 3. QUEUE - BATCH DELETION
+    
     cout << "\n-----------------------------------------\n";
-    cout << "3. Batch Deletion (Queue)\n\n";
-
+    cout << "3. Batch Photo Deletion (Queue)\n\n";
     queue<string> deleteQueue;
-
     deleteQueue.push("photo2.jpg");
     deleteQueue.push("photo1.jpg");
-
+    cout << "Processing deletion requests...\n\n";
     while (!deleteQueue.empty()) {
-
         cout << "Deleting "
              << deleteQueue.front()
              << endl;
-
         deleteQueue.pop();
     }
-
     cout << "\nAll deletion requests completed.\n";
-
     return 0;
 }
