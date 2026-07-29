@@ -10,13 +10,6 @@ The repository contains:
 
 ---
 
-## Requirements
-
-- C++ compiler (g++ or Visual Studio)
-- C++11 or later
-
----
-
 ## How to Run
 
 ### Option 1: Using Visual Studio
